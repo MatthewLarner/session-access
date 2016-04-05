@@ -1,4 +1,19 @@
-var getId = require('./getId');
+var getId = require('./getId'),
+    parseJSON = require('try-parse-json');
+
+function parseJSONValue(value){
+    if(value == null) {
+        return value;
+    }
+
+    var result = parseJSON(value);
+
+    if(result instanceof Error) {
+        result = null;
+    }
+
+    return result;
+}
 
 module.exports = function(allowedDomains) {
     var storage = window.localStorage,
@@ -6,7 +21,7 @@ module.exports = function(allowedDomains) {
         get: function(event, data) {
             event.source.postMessage({
                 id: data.id,
-                data: storage.getItem(data.key)
+                data: parseJSONValue(storage.getItem(data.key))
             }, event.origin);
         },
         set: function(event, data) {

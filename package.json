@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "crel": "^3.0.0"
+    "crel": "^3.0.0",
+    "try-parse-json": "^1.0.0"
   }
 }
