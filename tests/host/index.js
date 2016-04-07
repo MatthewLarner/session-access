@@ -21,10 +21,4 @@ doc.ready(function() {
             allowedMethods: ['get', 'set', 'remove']
         }
     ]);
-
-    console.log(storageHost);
-debugger
-
-    // sessionHost.close();
-
 });

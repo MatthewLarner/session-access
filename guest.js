@@ -3,7 +3,6 @@ var crel = require('crel'),
     prefix = 'sessionAccessId-',
     getId = require('./getId'),
     sessionRequests = [],
-    source,
     connected = false;
 
 function createId() {
@@ -32,8 +31,12 @@ function handleMessage(event) {
     }
 }
 
-function init(sourceUrl, parent) {
-    source = sourceUrl;
+
+function close() {
+    window.removeEventListener('message', handleMessage);
+}
+
+module.exports = function storageGuest(source, parent) {
     parent = parent || document.body;
 
     iframe = crel('iframe', {
@@ -45,6 +48,39 @@ function init(sourceUrl, parent) {
     );
 
     parent.appendChild(iframe);
+
+    function message(method, key, value, callback) {
+        if(!connected && method !== 'connect') {
+            sessionRequests.push(Array.prototype.slice.call(arguments));
+        }
+
+        var id = createId();
+
+        callbacks[id] = callback;
+
+        contentWindow.postMessage({
+            method: method,
+            key: key,
+            value: value,
+            id: id
+        }, source);
+    }
+
+    function get(key, callback) {
+        if(!callback) {
+            throw(new Error('callback required for get'));
+        }
+
+        message('get', key, null, callback);
+    }
+
+    function set(key, value, callback) {
+        message('set', key, value, null, callback);
+    }
+
+    function remove(key, callback) {
+        message('remove', key, null, callback);
+    }
 
     function checkConnected() {
         if (connected) {
@@ -68,50 +104,10 @@ function init(sourceUrl, parent) {
         checkConnected();
     }
 
-    return parent;
-}
+    storageGuest.get = get;
+    storageGuest.set = set;
+    storageGuest.remove = remove;
+    storageGuest.close = close;
 
-function close() {
-    window.removeEventListener('message', handleMessage);
-}
-
-function message(method, key, value, callback) {
-    if(!connected && method !== 'connect') {
-        sessionRequests.push(Array.prototype.slice.call(arguments));
-    }
-
-    var id = createId();
-
-    callbacks[id] = callback;
-
-    contentWindow.postMessage({
-        method: method,
-        key: key,
-        value: value,
-        id: id
-    }, source);
-}
-
-function get(key, callback) {
-    if(!callback) {
-        throw(new Error('callback required for get'));
-    }
-
-    message('get', key, null, callback);
-}
-
-function set(key, value, callback) {
-    message('set', key, value, null, callback);
-}
-
-function remove(key, callback) {
-    message('remove', key, null, callback);
-}
-
-module.exports =  {
-    get: get,
-    set: set,
-    remove: remove,
-    init: init,
-    close: close
+    return storageGuest;
 };

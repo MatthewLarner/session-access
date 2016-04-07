@@ -1,6 +1,6 @@
 var crel = require('crel'),
     doc = require('doc-js'),
-    session = require('../../guest.js');
+    createStorageGuest = require('../../guest.js');
 
 var instructions = crel('div', {
         class: 'instructions'
@@ -13,12 +13,12 @@ doc.ready(function() {
         instructions
     );
 
-    session.init('http://localhost:9123');
+    var storageGuest = createStorageGuest('http://localhost:9123');
 
-    session.get('foo', function() {
+    storageGuest.get('foo', function() {
         console.log('foo:', arguments);
     });
 
-    window.session = session;
+    window.storageGuest = storageGuest;
 
 });
