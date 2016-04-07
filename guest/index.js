@@ -1,7 +1,7 @@
 
 var crel = require('crel'),
     prefix = 'sessionAccessId-',
-    getId = require('./getId'),
+    getId = require('../getId'),
     sessionRequests = [],
     connected = false;
 

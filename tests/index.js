@@ -12,11 +12,14 @@ var StaticServer = require('static-server'),
     browserify = require('browserify'),
     watchify = require('watchify'),
     hostBundler = browserify({
-        entries: ['./tests/host/index.js'],
+        entries: ['tests/host/index.js'],
+        cache: {},
+        packageCache: {},
+        plugin: [watchify],
         debug: true
     }),
     guestBundler = browserify({
-        entries: ['./tests/guest/index.js'],
+        entries: ['tests/guest/index.js'],
         cache: {},
         packageCache: {},
         plugin: [watchify],
@@ -27,7 +30,7 @@ function bundleHost() {
     hostBundler.bundle().pipe(fs.createWriteStream('./tests/host/index.browser.js'));
 }
 
-// hostBundler.on('update', bundleHost);
+hostBundler.on('update', bundleHost);
 bundleHost();
 
 function bundleGuest() {

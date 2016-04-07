@@ -1,6 +1,6 @@
 var crel = require('crel'),
     doc = require('doc-js'),
-    createStorageGuest = require('../../guest.js');
+    createStorageGuest = require('../../guest');
 
 var instructions = crel('div', {
         class: 'instructions'
