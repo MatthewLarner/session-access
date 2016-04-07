@@ -15,10 +15,11 @@ doc.ready(function() {
 
     var storageGuest = createStorageGuest('http://localhost:9123');
 
-    storageGuest.get('foo', function() {
+    storageGuest.get('foo', function(error, data) {
         console.log('foo:', arguments);
     });
 
-    window.storageGuest = storageGuest;
-
+    storageGuest.set('foo', 'cabbage', function(error, data) {
+        // probably set...
+    });
 });

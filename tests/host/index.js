@@ -1,6 +1,6 @@
 var crel = require('crel'),
     doc = require('doc-js'),
-    storageHost = require('../../host');
+    createStorageHost = require('../../host');
 
 var instructions = crel('div', {
         class: 'instructions'
@@ -15,10 +15,12 @@ doc.ready(function() {
 
     window.localStorage.setItem('foo', JSON.stringify('bar'));
 
-    storageHost([
+    var storageHost = createStorageHost([
         {
             origin: 'http://localhost:9124',
             allowedMethods: ['get', 'set', 'remove']
         }
     ]);
+
+    // At some point - storageHost.close()
 });
